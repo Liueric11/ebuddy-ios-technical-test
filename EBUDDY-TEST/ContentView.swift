@@ -8,14 +8,37 @@
 import SwiftUI
 
 struct ContentView: View {
+    
+    @State private var showLoginView: Bool = false
+    
     var body: some View {
-        VStack {
-            Image(systemName: "globe")
-                .imageScale(.large)
-                .foregroundStyle(.tint)
-            Text("Hello, world!")
+        ZStack{
+            NavigationStack{
+                Text("home")
+                
+                Button{
+                    Task {
+                        do {
+                            try AuthenticationManager.shared.signOut()
+                            self.showLoginView = true
+                        } catch {
+                            
+                        }
+                    }
+                }label:{
+                    Text("logout")
+                }
+            }
         }
-        .padding()
+        .onAppear{
+            let user = try? AuthenticationManager.shared.getAuthenticatedUser()
+            self.showLoginView = user == nil 
+        }
+        .fullScreenCover(isPresented: $showLoginView) {
+            NavigationStack{
+                LoginView(showLoginView: $showLoginView)
+            }
+        }
     }
 }
 
