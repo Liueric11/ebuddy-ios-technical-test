@@ -11,4 +11,5 @@ protocol UserDataRepositoryProtocol {
     func signIn(email: String, password: String) async -> Bool
     func currentUser() throws -> AuthDataResultModel
     func logout() throws
+    func userDetail() async throws -> UserJSON
 }

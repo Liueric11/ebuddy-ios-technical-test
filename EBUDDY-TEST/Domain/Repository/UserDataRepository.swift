@@ -29,4 +29,8 @@ struct UserDataRepository: UserDataRepositoryProtocol {
     func logout() throws {
         return try dataSource.logout()
     }
+    
+    func userDetail() async throws -> UserJSON {
+        return try await dataSource.userDetail()
+    }
 }

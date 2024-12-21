@@ -23,4 +23,9 @@ struct UserDataSourceMock: UserDataSourceProtocol {
     
     func logout() throws {
     }
+    
+    func userDetail() async throws -> UserJSON {
+        let user = UserJSON(id: "twvswqhFczTra66okhkBC9vEJ8f1", email: "ericfrndo@gmail.com", phoneNumber: "082213231071", gender: .male)
+        return user
+    }
 }

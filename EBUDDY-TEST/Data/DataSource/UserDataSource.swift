@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import Firebase
 
 struct UserDataSource: UserDataSourceProtocol {
     func signIn(email: String, password: String) async -> Bool {
@@ -26,5 +27,14 @@ struct UserDataSource: UserDataSourceProtocol {
     
     func logout() throws {
         try AuthenticationManager.shared.signOut()
+    }
+    
+    func userDetail() async throws -> UserJSON {
+        guard let userData = try? AuthenticationManager.shared.getAuthenticatedUser() else {
+            throw URLError(.badServerResponse)
+        }
+        
+        let user = try await FirestoreManager.shared.fetchUser(uid: userData.uid)
+        return user
     }
 }

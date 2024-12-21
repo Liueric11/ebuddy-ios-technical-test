@@ -14,20 +14,7 @@ struct ContentView: View {
     var body: some View {
         ZStack{
             NavigationStack{
-                Text("home")
-                
-                Button{
-                    Task {
-                        do {
-                            try AuthenticationManager.shared.signOut()
-                            self.showLoginView = true
-                        } catch {
-                            
-                        }
-                    }
-                }label:{
-                    Text("logout")
-                }
+                ProfileView(showLoginView: $showLoginView)
             }
         }
         .onAppear{

@@ -7,6 +7,7 @@
 
 import Foundation
 import FirebaseAuth
+import FirebaseFirestore
 
 final class AuthenticationManager {
     
@@ -22,8 +23,23 @@ final class AuthenticationManager {
                 photoURL: authResult.user.photoURL?.absoluteString
             )
         } catch let error as NSError {
-            if error.code == AuthErrorCode.userNotFound.rawValue {
+            if error.code == AuthErrorCode.userNotFound.rawValue || error.code == AuthErrorCode.invalidCredential.rawValue {
                 let authDataResult = try await Auth.auth().createUser(withEmail: email, password: password)
+                var userData: [String:Any] = [
+                    "uid": authDataResult.user.uid,
+                    "phoneNumber": "",
+                ]
+                
+                if let email = authDataResult.user.email {
+                    userData["email"] = email
+                }
+                
+                if let photoURL = authDataResult.user.photoURL {
+                    userData["photoURL"] = photoURL.absoluteString
+                }
+                
+                try await Firestore.firestore().collection("USERS").document(authDataResult.user.uid).setData(userData, merge: false)
+                
                 return AuthDataResultModel(
                     uid: authDataResult.user.uid,
                     email: authDataResult.user.email,
