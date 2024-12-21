@@ -25,7 +25,7 @@ final class StorageManager {
         let path = "\(UUID().uuidString).jpeg"
         let resultMetaData = try await imagesReference.child(path).putDataAsync(data, metadata: meta)
         
-        guard let resultPath = resultMetaData.path, let resultName = resultMetaData.name else {
+        guard let resultPath = resultMetaData.path else {
             throw URLError(.badServerResponse)
         }
         

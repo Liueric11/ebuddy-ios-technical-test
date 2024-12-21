@@ -16,55 +16,70 @@ struct ProfileView: View {
     @Binding var showLoginView: Bool
     
     var body: some View {
-        VStack(alignment: .leading, spacing: 10) {
-            if let user = viewModel.user {
-                Text("UID: \(user.id ?? "N/A")")
-                    .font(.headline)
-                Text("Email: \(user.email ?? "N/A")")
-                    .font(.subheadline)
-                Text("Phone: \(user.phoneNumber ?? "N/A")")
-                    .font(.subheadline)
-                Text("Gender: \(user.gender != nil ? (user.gender == .male ? "Male" : "Female") : "N/A")")
-                    .font(.subheadline)
-                
-                PhotosPicker(selection: $selectedItem, matching: .images, photoLibrary: .shared()) {
-                    Text("Select a photo")
+        ScrollView {
+            VStack(alignment: .leading, spacing: 10) {
+                if let user = viewModel.user {
+                    Text("UID: \(user.id ?? "N/A")")
+                        .font(.headline)
+                    Text("Email: \(user.email ?? "N/A")")
                         .font(.subheadline)
+                    Text("Phone: \(user.phoneNumber ?? "N/A")")
+                        .font(.subheadline)
+                    Text("Gender: \(user.gender != nil ? (user.gender == .male ? "Male" : "Female") : "N/A")")
+                        .font(.subheadline)
+                    
+                    PhotosPicker(selection: $selectedItem, matching: .images, photoLibrary: .shared()) {
+                        Text("Select a photo")
+                            .font(.subheadline)
+                    }
+                    
+                    if let urlString = user.profileImage, let url = URL(string: urlString) {
+                        AsyncImage(url: url) { image in
+                            image
+                                .resizable()
+                                .scaledToFit()
+                                .frame(width: 150, height: 150)
+                                .cornerRadius(10)
+                        } placeholder: {
+                            ProgressView()
+                                .frame(width: 150, height: 150)
+                        }
+                    }
+                    
+                    
+                    NavigationLink {
+                        VStack{
+                            Text("test upload when in another screen")
+                        }
+                    } label: {
+                        Text("next screen")
+                    }
+                    
+                } else if viewModel.isLoading {
+                    ProgressView("Loading...").progressViewStyle(CircularProgressViewStyle())
+                } else {
+                    Text("No user data available.")
+                        .foregroundColor(.gray)
                 }
                 
-                if let urlString = user.profileImage, let url = URL(string: urlString) {
-                    AsyncImage(url: url) { image in
-                        image
-                            .resizable()
-                            .scaledToFit()
-                            .frame(width: 150, height: 150)
-                            .cornerRadius(10)
-                    } placeholder: {
-                        ProgressView()
-                            .frame(width: 150, height: 150)
+                Spacer()
+                
+                Button{
+                    Task {
+                        do {
+                            try AuthenticationManager.shared.signOut()
+                            self.showLoginView = true
+                        } catch {
+                            
+                        }
                     }
+                }label:{
+                    Text("logout")
                 }
-            } else if viewModel.isLoading {
-                ProgressView("Loading...").progressViewStyle(CircularProgressViewStyle())
-            } else {
-                Text("No user data available.")
-                    .foregroundColor(.gray)
             }
-            
-            Spacer()
-            
-            Button{
-                Task {
-                    do {
-                        try AuthenticationManager.shared.signOut()
-                        self.showLoginView = true
-                    } catch {
-                        
-                    }
-                }
-            }label:{
-                Text("logout")
-            }
+        }
+        .refreshable {
+            viewModel.getUserDetail()
         }
         .onAppear {
             viewModel.getUserDetail()
