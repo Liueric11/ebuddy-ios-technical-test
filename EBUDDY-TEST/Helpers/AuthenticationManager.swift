@@ -16,11 +16,19 @@ final class AuthenticationManager {
     func createUser(email: String, password: String) async throws -> AuthDataResultModel {
         do {
             let authResult = try await Auth.auth().signIn(withEmail: email, password: password)
-            return AuthDataResultModel(user: authResult.user)
+            return AuthDataResultModel(
+                uid: authResult.user.uid,
+                email: authResult.user.email,
+                photoURL: authResult.user.photoURL?.absoluteString
+            )
         } catch let error as NSError {
             if error.code == AuthErrorCode.userNotFound.rawValue {
                 let authDataResult = try await Auth.auth().createUser(withEmail: email, password: password)
-                return AuthDataResultModel(user: authDataResult.user)
+                return AuthDataResultModel(
+                    uid: authDataResult.user.uid,
+                    email: authDataResult.user.email,
+                    photoURL: authDataResult.user.photoURL?.absoluteString
+                )
             } else {
                 throw error
             }
@@ -33,11 +41,11 @@ final class AuthenticationManager {
             throw URLError(.badServerResponse)
         }
         
-        return AuthDataResultModel(user: user)
+        return AuthDataResultModel(uid: user.uid, email: user.email, photoURL: user.photoURL?.absoluteString)
     }
     
     func signOut() throws {
-        try  Auth.auth().signOut()
+        try Auth.auth().signOut()
     }
     
 }

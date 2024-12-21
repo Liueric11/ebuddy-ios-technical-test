@@ -9,6 +9,10 @@ import Foundation
 
 @MainActor
 final class LoginViewModel: ObservableObject {
+    var signInUseCase = SignInUseCase(
+        repository: UserDataRepository()
+    )
+    
     @Published var email: String = ""
     @Published var password: String = ""
     
@@ -17,7 +21,7 @@ final class LoginViewModel: ObservableObject {
         
         Task {
             do {
-                let _ = try await AuthenticationManager.shared.createUser(email: email, password: password)
+                let _ = try await signInUseCase.execute(email: email, password: password)
                 return true
             } catch{
                 return false
