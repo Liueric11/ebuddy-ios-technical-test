@@ -17,12 +17,14 @@ struct UserJSON: Identifiable, Codable {
     let email: String?
     let phoneNumber: String?
     let gender: GenderEnum?
+    let profileImage: String?
 
     enum CodingKeys: String, CodingKey {
         case id = "uid"
         case email
         case phoneNumber
         case gender = "ge"
+        case profileImage
     }
 }
 

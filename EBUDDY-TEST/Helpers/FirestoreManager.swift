@@ -7,7 +7,7 @@
 
 import Firebase
 
-class FirestoreManager {
+final class FirestoreManager {
     static let shared = FirestoreManager()
     private let db = Firestore.firestore()
 
@@ -22,6 +22,14 @@ class FirestoreManager {
         let jsonData = try JSONSerialization.data(withJSONObject: data)
         let user = try JSONDecoder().decode(UserJSON.self, from: jsonData)
         return user
+    }
+    
+    func updateUserProfileImage(uid: String, path: String) async throws {
+        let data: [String:Any] = [
+            UserJSON.CodingKeys.profileImage.rawValue: path
+        ]
+        
+        try await db.collection("USERS").document(uid).updateData(data)
     }
 }
 

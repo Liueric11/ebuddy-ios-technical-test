@@ -12,7 +12,7 @@ enum Environment: String {
     case staging = "StagingConfig"
 }
 
-class ConfigManager {
+final class ConfigManager {
     static let shared = ConfigManager()
     var config: [String: Any] = [:]
 
