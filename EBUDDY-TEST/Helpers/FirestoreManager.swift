@@ -31,5 +31,15 @@ final class FirestoreManager {
         
         try await db.collection("USERS").document(uid).updateData(data)
     }
+    
+    func updateUserData(uid: String, email: String, phone: String, gender: Int) async throws {
+        let data: [String:Any] = [
+            UserJSON.CodingKeys.email.rawValue: email,
+            UserJSON.CodingKeys.phoneNumber.rawValue: phone,
+            UserJSON.CodingKeys.gender.rawValue: gender
+        ]
+        
+        try await db.collection("USERS").document(uid).updateData(data)
+    }
 }
 

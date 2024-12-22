@@ -7,9 +7,16 @@
 
 import Foundation
 
-enum GenderEnum: Int, Codable {
+enum GenderEnum: Int, Codable, CaseIterable {
     case female = 0
     case male = 1
+
+    var displayName: String {
+        switch self {
+        case .female: return "Female"
+        case .male: return "Male"
+        }
+    }
 }
 
 struct UserJSON: Identifiable, Codable {
