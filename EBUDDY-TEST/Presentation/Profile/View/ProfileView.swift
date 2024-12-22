@@ -32,10 +32,11 @@ struct ProfileView: View {
                             Button{
                                 routeManager.push(to: .settingView(showLoginView: $showLoginView))
                             }label:{
-                                Text("Zynx")
+                                Text(user.username ?? "N/A")
                                     .font(.system(size: 48))
                                     .fontWeight(.bold)
                                     .foregroundStyle(.textPrimary)
+                                    .lineLimit(1)
                             }
                             
                             Circle()
@@ -72,27 +73,85 @@ struct ProfileView: View {
                                     .frame(width: imageWidth, height: imageHeight)
                             }
                             .padding(0)
+                        } else {
+                            Image(systemName: "photo.fill")
+                                .resizable()
+                                .frame(width: imageWidth, height: imageHeight)
+                                .cornerRadius(40)
                         }
                         
-                        HStack{
-                            Image("cod")
+                        HStack(spacing: 8){
+                            Image("lightning")
                                 .resizable()
-                                .frame(width: 96, height: 96)
+                                .frame(width: 32, height: 32)
                                 .scaledToFit()
-                                .padding(0)
                             
-                            Image("ml")
+                            Text("Available today!")
+                                .font(.system(size: 24))
+                                .fontWeight(.regular)
+                                .foregroundStyle(.textPrimary)
+                        }
+                        .padding(.vertical, 12)
+                        .frame(width: imageWidth - 48)
+                        .background(
+                            ZStack {
+                                BlurView()
+                                    .cornerRadius(100)
+                            }
+                        )
+                        .offset(y: -imageHeight + 16)
+                        
+                        HStack{
+                            if let games = user.games {
+                                HStack(spacing: -30) {
+                                    ForEach(Array(games.prefix(2).enumerated()), id: \.element) { index, imageName in
+                                        Image(imageName)
+                                            .resizable()
+                                            .frame(width: 96, height: 96)
+                                            .scaledToFit()
+                                            .padding(0)
+                                            .overlay {
+                                                if index == 1 && games.count > 2 {
+                                                    Text("+\(games.count - 2)")
+                                                        .font(.system(size: 32))
+                                                        .fontWeight(.regular)
+                                                        .foregroundStyle(.textGames)
+                                                        .background{
+                                                            Circle()
+                                                                .fill(Color.white.opacity(0.6))
+                                                                .frame(width: 96, height: 96)
+                                                        }
+                                                }
+                                            }
+                                    }
+                                }
+                            }
+                            
+                            Spacer()
+                            
+                            Image("voice")
                                 .resizable()
-                                .frame(width: 96, height: 96)
+                                .frame(width: 62, height: 62)
                                 .scaledToFit()
                                 .padding(0)
-                                .offset(x: -30)
+                                .background {
+                                    Circle()
+                                        .fill(
+                                            LinearGradient(
+                                                gradient: Gradient(colors: [.gradient1, .gradient2, .gradient3]),
+                                                startPoint: .topTrailing,
+                                                endPoint: .bottomLeading
+                                            )
+                                        )
+                                        .frame(width: 96, height: 96)
+                                }
+                                .offset(x: -15)
                         }
                         .padding(.horizontal, 24)
                         .frame(maxWidth: .infinity, alignment: .leading)
-                        .offset(y: -56)
+                        .offset(y: -125)
                     }
-                    .padding(.bottom, -40)
+                    .padding(.bottom, -110)
                     
                     VStack(alignment: .leading, spacing: 4){
                         HStack(spacing: 8){
@@ -101,12 +160,12 @@ struct ProfileView: View {
                                 .frame(width: 48, height: 48)
                                 .scaledToFit()
                             
-                            Text("4.9")
+                            Text("\(user.rating.map { String(format: "%.1f", $0) } ?? "N/A")")
                                 .font(.system(size: 32))
                                 .fontWeight(.bold)
                                 .foregroundStyle(.textPrimary)
                             
-                            Text("(6.1)")
+                            Text("(61)")
                                 .font(.system(size: 32))
                                 .fontWeight(.regular)
                                 .foregroundStyle(.textTertiary)
@@ -119,7 +178,7 @@ struct ProfileView: View {
                                 .scaledToFit()
                             
                             HStack(alignment: .bottom, spacing: 0) {
-                                Text("110")
+                                Text("\(user.pricing.map { String(format: "%.0f", $0) } ?? "N/A")")
                                     .font(.system(size: 48))
                                     .fontWeight(.bold)
                                     .foregroundStyle(.textPrimary)

@@ -14,6 +14,8 @@ final class SettingViewModel: ObservableObject {
     )
     
     @Published var uid: String = ""
+    @Published var username: String = ""
+    @Published var pricing: Double = 0
     @Published var email: String = ""
     @Published var phone: String = ""
     @Published var gender: GenderEnum = .male
@@ -27,6 +29,8 @@ final class SettingViewModel: ObservableObject {
             self.email = user.email ?? ""
             self.phone = user.phoneNumber ?? ""
             self.gender = user.gender ?? .male
+            self.username = user.username ?? ""
+            self.pricing = user.pricing ?? 0
         }
     }
     
@@ -40,7 +44,9 @@ final class SettingViewModel: ObservableObject {
                     uid: uid,
                     email: email,
                     phone: phone,
-                    gender: gender.rawValue
+                    gender: gender.rawValue,
+                    username: username,
+                    pricing: pricing
                 )
                 self.isLoading = false
                 self.isSuccess = true

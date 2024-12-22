@@ -25,6 +25,10 @@ struct UserJSON: Identifiable, Codable {
     let phoneNumber: String?
     let gender: GenderEnum?
     let profileImage: String?
+    let rating: Double?
+    let pricing: Double?
+    let games: [String]?
+    let username: String?
 
     enum CodingKeys: String, CodingKey {
         case id = "uid"
@@ -32,6 +36,10 @@ struct UserJSON: Identifiable, Codable {
         case phoneNumber
         case gender = "ge"
         case profileImage
+        case rating
+        case pricing
+        case games
+        case username
     }
 }
 

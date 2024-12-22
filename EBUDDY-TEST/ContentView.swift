@@ -31,6 +31,11 @@ struct ContentView: View {
                 LoginView(showLoginView: $showLoginView)
             }
         }
+        .onChange(of: showLoginView) { newValue, oldValue in
+            if !newValue {
+                profileViewModel.getUserDetail()
+            }
+        }
     }
 }
 

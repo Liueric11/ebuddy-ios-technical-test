@@ -17,25 +17,54 @@ struct SettingView: View {
     @Binding var showLoginView: Bool
     
     var body: some View {
-        VStack{
-            TextField("Email...", text: $settingViewModel.email)
-                .padding()
-                .background(Color.gray.opacity(0.6))
-                .cornerRadius(10)
+        VStack(spacing: 8){
+            VStack(spacing: 4){
+                Text("Username")
+                    .font(.system(size: 12))
+                    .fontWeight(.bold)
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                TextField("Username...", text: $settingViewModel.username)
+                    .textFieldStyle(RoundedBorderTextFieldStyle())
+            }
             
-            TextField("Phone...", text: $settingViewModel.phone)
-                .keyboardType(.numberPad)
-                .onChange(of: settingViewModel.phone) { newValue, oldValue in
-                    settingViewModel.phone = newValue.filter { $0.isNumber }
-                }
-                .padding()
-                .background(Color.gray.opacity(0.6))
-                .cornerRadius(10)
+            VStack(spacing: 4){
+                Text("Email")
+                    .font(.system(size: 12))
+                    .fontWeight(.bold)
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                TextField("Email...", text: $settingViewModel.email)
+                    .textFieldStyle(RoundedBorderTextFieldStyle())
+            }
+            
+            VStack(spacing: 4){
+                Text("Phone Number")
+                    .font(.system(size: 12))
+                    .fontWeight(.bold)
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                TextField("Phone...", text: $settingViewModel.phone)
+                    .keyboardType(.numberPad)
+                    .onChange(of: settingViewModel.phone) { newValue, oldValue in
+                        settingViewModel.phone = newValue.filter { $0.isNumber }
+                    }
+                    .textFieldStyle(RoundedBorderTextFieldStyle())
+            }
+            
+            VStack(spacing: 4){
+                Text("Pricing")
+                    .font(.system(size: 12))
+                    .fontWeight(.bold)
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                TextField("Pricing...", value: $settingViewModel.pricing, format: .number)
+                    .textFieldStyle(RoundedBorderTextFieldStyle())
+                    .keyboardType(.numberPad)
+            }
+            
+
             
             HStack {
                 Text("Select Gender")
-                    .font(.headline)
-                    .foregroundStyle(Color.gray.opacity(0.6))
+                    .font(.system(size: 12))
+                    .fontWeight(.bold)
                 
                 Spacer()
                 
@@ -46,28 +75,44 @@ struct SettingView: View {
                 }
                 .pickerStyle(.menu)
             }
-            .padding()
             
             if let user = profileViewModel.user {
-                if let urlString = user.profileImage, let url = URL(string: urlString) {
-                    AsyncImage(url: url) { image in
-                        image
-                            .resizable()
-                            .scaledToFit()
-                            .frame(width: 150, height: 150)
-                            .cornerRadius(10)
-                    } placeholder: {
-                        ProgressView()
-                            .frame(width: 150, height: 150)
+                VStack{
+                    Text("Photo Profile")
+                        .font(.system(size: 12))
+                        .fontWeight(.bold)
+                        .frame(maxWidth: .infinity, alignment: .leading)
+                    
+                    HStack{
+                        if let urlString = user.profileImage, let url = URL(string: urlString) {
+                            AsyncImage(url: url) { image in
+                                image
+                                    .resizable()
+                                    .frame(width: 150, height: 150)
+                                    .scaledToFit()
+                                    .cornerRadius(10)
+                            } placeholder: {
+                                ProgressView()
+                                    .frame(width: 150, height: 150)
+                            }
+                        } else {
+                            Image(systemName: "photo.fill")
+                                .resizable()
+                                .frame(width: 150, height: 150)
+                                .cornerRadius(40)
+                        }
+                        
+                        Spacer()
+                        
+                        PhotosPicker(selection: $selectedItem, matching: .images, photoLibrary: .shared()) {
+                            Text("Select a photo")
+                                .font(.subheadline)
+                        }
                     }
                 }
-                
-                PhotosPicker(selection: $selectedItem, matching: .images, photoLibrary: .shared()) {
-                    Text("Select a photo")
-                        .font(.subheadline)
-                }
-                .frame(maxWidth: .infinity, alignment: .leading)
             }
+            
+            Spacer()
             
             Button{
                 Task {
@@ -79,24 +124,15 @@ struct SettingView: View {
 
                     }
                 }
-            }label:{
-                Text("logout")
-            }
-            .frame(maxWidth: .infinity, alignment: .leading)
-            
-            Button{
-                settingViewModel.updateUserDetail()
             } label: {
-                Text("Ubah")
+                Text("Logout")
                     .font(.headline)
                     .foregroundStyle(.white)
                     .frame(height: 55)
                     .frame(maxWidth: .infinity)
-                    .background(Color.blue)
+                    .background(Color.red.opacity(0.8))
                     .cornerRadius(10)
             }
-            
-            Spacer()
         }
         .padding()
         .onAppear {
@@ -129,6 +165,13 @@ struct SettingView: View {
         .onChange(of: selectedItem) { oldValue, newValue in
             if let newValue {
                 profileViewModel.saveProfileImage(item: newValue)
+            }
+        }
+        .toolbar {
+            ToolbarItem(placement: .topBarTrailing) {
+                Button("Save") {
+                    settingViewModel.updateUserDetail()
+                }
             }
         }
     }

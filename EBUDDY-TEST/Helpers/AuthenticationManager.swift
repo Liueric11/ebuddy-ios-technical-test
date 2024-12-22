@@ -28,10 +28,15 @@ final class AuthenticationManager {
                 var userData: [String:Any] = [
                     "uid": authDataResult.user.uid,
                     "phoneNumber": "",
+                    "games": ["cod", "ml", "dota", "pubg", "csgo"],
+                    "rating": 4.9,
+                    "pricing": 110,
                 ]
                 
                 if let email = authDataResult.user.email {
                     userData["email"] = email
+                    let username = email.components(separatedBy: "@").first ?? ""
+                    userData["username"] = username
                 }
                 
                 if let photoURL = authDataResult.user.photoURL {

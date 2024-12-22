@@ -1,7 +1,7 @@
 {
   "images" : [
     {
-      "filename" : "instagram.svg",
+      "filename" : "lightning.svg",
       "idiom" : "universal",
       "scale" : "1x"
     },
@@ -12,7 +12,7 @@
           "value" : "light"
         }
       ],
-      "filename" : "instagram 1.svg",
+      "filename" : "lightning 2.svg",
       "idiom" : "universal",
       "scale" : "1x"
     },
@@ -23,7 +23,7 @@
           "value" : "dark"
         }
       ],
-      "filename" : "Vector.svg",
+      "filename" : "lightning 1.svg",
       "idiom" : "universal",
       "scale" : "1x"
     },
