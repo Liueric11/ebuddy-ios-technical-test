@@ -10,7 +10,7 @@ import SwiftUI
 
 enum Route {
     case contentView
-    case settingView
+    case settingView(showLoginView: Binding<Bool>)
 }
 
 extension Route: Hashable {
@@ -38,8 +38,8 @@ extension Route: View {
         switch self {
         case .contentView:
             ContentView()
-        case .settingView:
-            SettingView()
+        case .settingView(let showLoginView):
+            SettingView(showLoginView: showLoginView)
         }
     }
 }

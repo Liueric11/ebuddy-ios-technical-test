@@ -2,18 +2,24 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
+	<key>CLIENT_ID</key>
+	<string>997559479556-l3rshfq0apskjf4ege0f1oe7g8ojh2j1.apps.googleusercontent.com</string>
+	<key>REVERSED_CLIENT_ID</key>
+	<string>com.googleusercontent.apps.997559479556-l3rshfq0apskjf4ege0f1oe7g8ojh2j1</string>
+	<key>ANDROID_CLIENT_ID</key>
+	<string>997559479556-1f58bl61c03fnbkrpe50t6r8i9qbd1mn.apps.googleusercontent.com</string>
 	<key>API_KEY</key>
-	<string>AIzaSyC794dr-rukQ3OIcEB_XxEZ_C-ZSWaZs7E</string>
+	<string>AIzaSyDVSnoZQOn3qPLpJILNuXya96KzpqeQj7M</string>
 	<key>GCM_SENDER_ID</key>
-	<string>315512170297</string>
+	<string>997559479556</string>
 	<key>PLIST_VERSION</key>
 	<string>1</string>
 	<key>BUNDLE_ID</key>
 	<string>com.eric.EBUDDY-TEST</string>
 	<key>PROJECT_ID</key>
-	<string>ebuddy-test-1e77c</string>
+	<string>deal-dulu</string>
 	<key>STORAGE_BUCKET</key>
-	<string>ebuddy-test-1e77c.firebasestorage.app</string>
+	<string>deal-dulu.firebasestorage.app</string>
 	<key>IS_ADS_ENABLED</key>
 	<false></false>
 	<key>IS_ANALYTICS_ENABLED</key>
@@ -25,6 +31,6 @@
 	<key>IS_SIGNIN_ENABLED</key>
 	<true></true>
 	<key>GOOGLE_APP_ID</key>
-	<string>1:315512170297:ios:1499d6d03291b1dd762ae8</string>
+	<string>1:997559479556:ios:8901c235db1c286dc23451</string>
 </dict>
 </plist>

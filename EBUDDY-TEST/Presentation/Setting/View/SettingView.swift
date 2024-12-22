@@ -6,12 +6,15 @@
 //
 
 import SwiftUI
+import PhotosUI
 
 struct SettingView: View {
     @EnvironmentObject var profileViewModel: ProfileViewModel
     @EnvironmentObject private var routeManager: NavigationRouter
     @StateObject private var settingViewModel = SettingViewModel()
+    @State private var selectedItem: PhotosPickerItem? = nil
     @State private var showErrorModal = false
+    @Binding var showLoginView: Bool
     
     var body: some View {
         VStack{
@@ -44,6 +47,42 @@ struct SettingView: View {
                 .pickerStyle(.menu)
             }
             .padding()
+            
+            if let user = profileViewModel.user {
+                if let urlString = user.profileImage, let url = URL(string: urlString) {
+                    AsyncImage(url: url) { image in
+                        image
+                            .resizable()
+                            .scaledToFit()
+                            .frame(width: 150, height: 150)
+                            .cornerRadius(10)
+                    } placeholder: {
+                        ProgressView()
+                            .frame(width: 150, height: 150)
+                    }
+                }
+                
+                PhotosPicker(selection: $selectedItem, matching: .images, photoLibrary: .shared()) {
+                    Text("Select a photo")
+                        .font(.subheadline)
+                }
+                .frame(maxWidth: .infinity, alignment: .leading)
+            }
+            
+            Button{
+                Task {
+                    do {
+                        try AuthenticationManager.shared.signOut()
+                        self.showLoginView = true
+                        routeManager.reset()
+                    } catch {
+
+                    }
+                }
+            }label:{
+                Text("logout")
+            }
+            .frame(maxWidth: .infinity, alignment: .leading)
             
             Button{
                 settingViewModel.updateUserDetail()
@@ -87,6 +126,11 @@ struct SettingView: View {
                 routeManager.goBack()
             }
         }
+        .onChange(of: selectedItem) { oldValue, newValue in
+            if let newValue {
+                profileViewModel.saveProfileImage(item: newValue)
+            }
+        }
     }
 }
 
@@ -95,7 +139,7 @@ struct SettingView: View {
     @Previewable @StateObject var profileViewModel = ProfileViewModel()
         
     NavigationStack(path: $routerManager.routes){
-        SettingView()
+        SettingView(showLoginView: .constant(false))
             .navigationDestination(for: Route.self) { $0 }
     }
     .environmentObject(routerManager)

@@ -13,71 +13,129 @@ struct ProfileView: View {
     @EnvironmentObject var profileViewModel: ProfileViewModel
     @EnvironmentObject private var routeManager: NavigationRouter
     @State private var showErrorModal = false
-    @State private var selectedItem: PhotosPickerItem? = nil
     @Binding var showLoginView: Bool
+    
+    var imageWidth: CGFloat {
+        UIScreen.main.bounds.width - 32
+    }
+
+    var imageHeight: CGFloat {
+        imageWidth * 1.25
+    }
     
     var body: some View {
         ScrollView {
-            VStack(alignment: .leading, spacing: 10) {
+            VStack{
                 if let user = profileViewModel.user {
-                    Text("UID: \(user.id ?? "N/A")")
-                        .font(.headline)
-                    Text("Email: \(user.email ?? "N/A")")
-                        .font(.subheadline)
-                    Text("Phone: \(user.phoneNumber ?? "N/A")")
-                        .font(.subheadline)
-                    Text("Gender: \(user.gender != nil ? (user.gender == .male ? "Male" : "Female") : "N/A")")
-                        .font(.subheadline)
-                    
-                    PhotosPicker(selection: $selectedItem, matching: .images, photoLibrary: .shared()) {
-                        Text("Select a photo")
-                            .font(.subheadline)
-                    }
-                    
-                    if let urlString = user.profileImage, let url = URL(string: urlString) {
-                        AsyncImage(url: url) { image in
-                            image
-                                .resizable()
-                                .scaledToFit()
-                                .frame(width: 150, height: 150)
-                                .cornerRadius(10)
-                        } placeholder: {
-                            ProgressView()
-                                .frame(width: 150, height: 150)
-                        }
-                    }
-                    
-                    
-                    NavigationLink {
-                        VStack{
-                            Text("test upload when in another screen")
-                        }
-                    } label: {
-                        Text("next screen")
-                    }
-                    
-                } else if profileViewModel.isLoading {
-                    ProgressView("Loading...").progressViewStyle(CircularProgressViewStyle())
-                } else {
-                    Text("No user data available.")
-                        .foregroundColor(.gray)
-                }
-                
-                Spacer()
-                
-                Button{
-                    Task {
-                        do {
-                            try AuthenticationManager.shared.signOut()
-                            self.showLoginView = true
-                        } catch {
+                    HStack{
+                        HStack(spacing: 16){
+                            Button{
+                                routeManager.push(to: .settingView(showLoginView: $showLoginView))
+                            }label:{
+                                Text("Zynx")
+                                    .font(.system(size: 48))
+                                    .fontWeight(.bold)
+                                    .foregroundStyle(.textPrimary)
+                            }
                             
+                            Circle()
+                                .fill(.success)
+                                .frame(width: 16, height: 16)
+                        }
+                        .frame(maxWidth: .infinity, alignment: .leading)
+                        
+                        Spacer()
+                        
+                        HStack(spacing: 16){
+                            Image("verified")
+                                .resizable()
+                                .frame(width: 48, height: 48)
+                                .scaledToFit()
+                            
+                            Image("instagram")
+                                .resizable()
+                                .frame(width: 40, height: 40)
+                                .scaledToFit()
                         }
                     }
-                }label:{
-                    Text("logout")
+                    
+                    VStack{
+                        if let urlString = user.profileImage, let url = URL(string: urlString) {
+                            AsyncImage(url: url) { image in
+                                image
+                                    .resizable()
+                                    .frame(width: imageWidth, height: imageHeight)
+                                    .scaledToFit()
+                                    .cornerRadius(40)
+                            } placeholder: {
+                                ProgressView()
+                                    .frame(width: imageWidth, height: imageHeight)
+                            }
+                            .padding(0)
+                        }
+                        
+                        HStack{
+                            Image("cod")
+                                .resizable()
+                                .frame(width: 96, height: 96)
+                                .scaledToFit()
+                                .padding(0)
+                            
+                            Image("ml")
+                                .resizable()
+                                .frame(width: 96, height: 96)
+                                .scaledToFit()
+                                .padding(0)
+                                .offset(x: -30)
+                        }
+                        .padding(.horizontal, 24)
+                        .frame(maxWidth: .infinity, alignment: .leading)
+                        .offset(y: -56)
+                    }
+                    .padding(.bottom, -40)
+                    
+                    VStack(alignment: .leading, spacing: 4){
+                        HStack(spacing: 8){
+                            Image("star")
+                                .resizable()
+                                .frame(width: 48, height: 48)
+                                .scaledToFit()
+                            
+                            Text("4.9")
+                                .font(.system(size: 32))
+                                .fontWeight(.bold)
+                                .foregroundStyle(.textPrimary)
+                            
+                            Text("(6.1)")
+                                .font(.system(size: 32))
+                                .fontWeight(.regular)
+                                .foregroundStyle(.textTertiary)
+                        }
+                        
+                        HStack(spacing: 8){
+                            Image("mana")
+                                .resizable()
+                                .frame(width: 48, height: 48)
+                                .scaledToFit()
+                            
+                            HStack(alignment: .bottom, spacing: 0) {
+                                Text("110")
+                                    .font(.system(size: 48))
+                                    .fontWeight(.bold)
+                                    .foregroundStyle(.textPrimary)
+                                
+                                Text(".00/1Hr")
+                                    .font(.system(size: 24))
+                                    .fontWeight(.regular)
+                                    .foregroundStyle(.textPrimary)
+                                    .baselineOffset(8)
+                            }
+                        }
+                    }
+                    .frame(maxWidth: .infinity, alignment: .leading)
                 }
             }
+            .padding(16)
         }
         .refreshable {
             profileViewModel.getUserDetail()
@@ -94,32 +152,13 @@ struct ProfileView: View {
         }
         .overlay {
             if profileViewModel.isLoading {
-                ProgressView("Saving...").progressViewStyle(
+                ProgressView("loading...").progressViewStyle(
                     CircularProgressViewStyle())
             }
         }
         .onChange(of: profileViewModel.errorMessage) { oldValue, newValue in
             if newValue != nil {
                 showErrorModal = true
-            }
-        }
-        .onChange(of: selectedItem) { oldValue, newValue in
-            if let newValue {
-                profileViewModel.saveProfileImage(item: newValue)
-            }
-        }
-        .frame(maxWidth: .infinity, alignment: .leading)
-        .padding()
-        .navigationTitle("Profile")
-        .toolbar {
-            ToolbarItem(placement: .topBarTrailing) {
-                Button{
-                    routeManager.push(to: .settingView)
-                }label:{
-                    Image(systemName: "gear")
-                        .resizable()
-                        .scaledToFit()
-                }
             }
         }
     }
