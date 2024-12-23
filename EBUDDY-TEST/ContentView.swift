@@ -14,14 +14,25 @@ struct ContentView: View {
     @StateObject private var routerManager = NavigationRouter()
     
     var body: some View {
-        ZStack{
-            NavigationStack(path: $routerManager.routes){
+        TabView {
+            NavigationStack(path: $routerManager.routes) {
                 ProfileView(showLoginView: $showLoginView)
                     .navigationDestination(for: Route.self) { $0 }
             }
+            .tabItem {
+                Label("Profile", systemImage: "person.fill")
+            }
             .environmentObject(profileViewModel)
             .environmentObject(routerManager)
+            
+            NavigationStack{
+                UsersListView()
+            }
+            .tabItem {
+                Label("Users", systemImage: "list.dash")
+            }
         }
+
         .onAppear{
             let user = try? AuthenticationManager.shared.getAuthenticatedUser()
             self.showLoginView = user == nil 
@@ -32,9 +43,7 @@ struct ContentView: View {
             }
         }
         .onChange(of: showLoginView) { newValue, oldValue in
-            if !newValue {
-                profileViewModel.getUserDetail()
-            }
+            profileViewModel.getUserDetail()
         }
     }
 }

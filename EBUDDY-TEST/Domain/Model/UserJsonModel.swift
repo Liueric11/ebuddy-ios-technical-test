@@ -29,6 +29,7 @@ struct UserJSON: Identifiable, Codable {
     let pricing: Double?
     let games: [String]?
     let username: String?
+    let activeDate: Date?
 
     enum CodingKeys: String, CodingKey {
         case id = "uid"
@@ -40,6 +41,7 @@ struct UserJSON: Identifiable, Codable {
         case pricing
         case games
         case username
+        case activeDate
     }
 }
 

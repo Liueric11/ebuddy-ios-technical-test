@@ -11,6 +11,7 @@ struct LoginView: View {
     
     @StateObject private var viewModel = LoginViewModel()
     @Binding var showLoginView: Bool
+    @State private var showErrorModal = false
     
     var body: some View {
         VStack{
@@ -25,7 +26,7 @@ struct LoginView: View {
                 .cornerRadius(10)
             
             Button{
-                showLoginView = viewModel.signIn()
+                viewModel.signIn()
             } label: {
                 Text("Login")
                     .font(.headline)
@@ -40,6 +41,29 @@ struct LoginView: View {
         }
         .padding()
         .navigationTitle("Login")
+        .overlay {
+            if viewModel.isLoading {
+                ProgressView("loading...").progressViewStyle(
+                    CircularProgressViewStyle())
+            }
+        }
+        .alert(isPresented: $showErrorModal) {
+            Alert(
+                title: Text("Error"),
+                message: Text(viewModel.errorMessage ?? "Unknown error occurred"),
+                dismissButton: .default(Text("OK"))
+            )
+        }
+        .onChange(of: viewModel.errorMessage) { oldValue, newValue in
+            if newValue != nil {
+                showErrorModal = true
+            }
+        }
+        .onChange(of: viewModel.isSuccess) { oldValue, newValue in
+            if newValue {
+                showLoginView = !newValue
+            }
+        }
     }
 }
 

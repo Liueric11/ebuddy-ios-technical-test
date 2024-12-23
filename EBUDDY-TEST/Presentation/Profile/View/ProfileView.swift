@@ -20,7 +20,7 @@ struct ProfileView: View {
     }
 
     var imageHeight: CGFloat {
-        imageWidth * 1.25
+        imageWidth * 1.15
     }
     
     var body: some View {

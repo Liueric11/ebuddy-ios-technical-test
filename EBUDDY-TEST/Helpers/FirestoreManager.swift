@@ -15,13 +15,10 @@ final class FirestoreManager {
 
     func fetchUser(uid: String) async throws -> UserJSON {
         let document = try await db.collection("USERS").document(uid).getDocument()
-        guard let data = document.data() else {
+        guard document.exists else {
             throw URLError(.badServerResponse)
         }
-
-        let jsonData = try JSONSerialization.data(withJSONObject: data)
-        let user = try JSONDecoder().decode(UserJSON.self, from: jsonData)
-        return user
+        return try document.data(as: UserJSON.self)
     }
     
     func updateUserProfileImage(uid: String, path: String) async throws {
@@ -42,6 +39,44 @@ final class FirestoreManager {
         ]
         
         try await db.collection("USERS").document(uid).updateData(data)
+    }
+    
+    func getAllUsers(
+        filterActive: Bool,
+        filterRating: Bool,
+        filterFemale: Bool,
+        filterPricing: Bool
+    ) async throws -> [UserJSON] {
+        var query: Query = db.collection("USERS")
+        
+        if filterActive {
+            query = query.order(by: UserJSON.CodingKeys.activeDate.rawValue, descending: true)
+        }
+        
+        if filterRating {
+            query = query.order(by: UserJSON.CodingKeys.rating.rawValue, descending: true)
+        }
+        
+        if filterFemale {
+            query = query.whereField(UserJSON.CodingKeys.gender.rawValue, isEqualTo: 0)
+        }
+        
+        if filterPricing {
+            query = query.order(by: UserJSON.CodingKeys.pricing.rawValue, descending: false)
+        }
+        
+        let snapshot = try await query.getDocuments()
+        
+        let users = snapshot.documents.compactMap { document -> UserJSON? in
+            do {
+                let user = try document.data(as: UserJSON.self)
+                return user
+            } catch {
+                return nil
+            }
+        }
+        
+        return users
     }
 }
 

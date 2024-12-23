@@ -34,7 +34,8 @@ struct UserDataSourceMock: UserDataSourceProtocol {
             rating: 4.9,
             pricing: 110,
             games: ["cod", "ml", "dota", "pubg", "csgo"],
-            username: "ericfrndo"
+            username: "ericfrndo",
+            activeDate: Date()
         )
         return user
     }

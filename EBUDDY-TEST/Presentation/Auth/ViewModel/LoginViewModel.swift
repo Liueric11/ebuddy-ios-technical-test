@@ -15,19 +15,29 @@ final class LoginViewModel: ObservableObject {
     
     @Published var email: String = ""
     @Published var password: String = ""
+
+    @Published var isSuccess = false
+    @Published var isLoading = false
+    @Published var errorMessage: String?
     
-    func signIn() -> Bool {
-        guard !email.isEmpty, !password.isEmpty else { return false }
+    func signIn() {
+        guard !email.isEmpty, !password.isEmpty else { return }
+        self.isLoading = true
         
         Task {
             do {
-                let _ = try await signInUseCase.execute(email: email, password: password)
-                return true
+                let result = try await signInUseCase.execute(
+                    email: email.trimmingCharacters(in: .whitespaces),
+                    password: password
+                )
+                self.isLoading = false
+                self.isSuccess = result
+                self.errorMessage = result ? nil : "Invalid credentials"
             } catch{
-                return false
+                self.isLoading = false
+                self.isSuccess = false
+                self.errorMessage = "Invalid credentials"
             }
         }
-        
-        return false
     }
 }
