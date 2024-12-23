@@ -26,11 +26,11 @@ struct UserDataSourceMock: UserDataSourceProtocol {
     
     func userDetail() async throws -> UserJSON {
         let user = UserJSON(
-            id: "twvswqhFczTra66okhkBC9vEJ8f1",
+            id: "ZHY6Hd8GfDR3CWPZPHWSPjz7jLu2",
             email: "ericfrndo@gmail.com",
             phoneNumber: "082213231071",
             gender: .male,
-            profileImage: "safas",
+            profileImage: "https://firebasestorage.googleapis.com:443/v0/b/deal-dulu.firebasestorage.app/o/images%2FC4652ECF-ACB4-44A8-82A4-C8CE74F176CF.jpeg?alt=media&token=d81f399a-2fd6-4dc5-88d6-3984087f186b",
             rating: 4.9,
             pricing: 110,
             games: ["cod", "ml", "dota", "pubg", "csgo"],
